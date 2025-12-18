@@ -5,7 +5,6 @@ import 'package:flash/flash_helper.dart';
 import '../../core/route/app_route.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/theme_bloc.dart';
-import '../features/authentication/login/view/login_page.dart';
 
 class AppWidget extends StatefulWidget {
   const AppWidget({super.key});
