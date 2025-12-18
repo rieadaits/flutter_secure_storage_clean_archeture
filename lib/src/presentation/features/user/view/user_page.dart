@@ -25,7 +25,7 @@ class UserPage extends StatelessWidget {
             BlocBuilder<UserBloc, UserState>(
               builder: (context, state) {
                 if (state is UserLoading) {
-                  return CircularProgressIndicator();
+                  return Center(child: CircularProgressIndicator());
                 }
                 if (state is UserSuccess) {
                   return UserItem(user: state.user);

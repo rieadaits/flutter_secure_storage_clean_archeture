@@ -28,10 +28,10 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UserBloc(userRepository: sl()));
 
   // Repository
-  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(remoteDataSource: sl(), storage: sl()));
+  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(remoteDataSource: sl()));
   sl.registerLazySingleton<UserRepository>(() => UserRepositoryImpl(remoteDataSource: sl()));
   // Data sources
-  sl.registerLazySingleton<AuthenticationRemoteDataSources>(() => AuthenticationRemoteDataSourcesImpl(client: sl()));
+  sl.registerLazySingleton<AuthenticationRemoteDataSources>(() => AuthenticationRemoteDataSourcesImpl(client: sl(), storage: sl()));
   sl.registerLazySingleton<UserRemoteDataSource>(() => UserRemoteDataSourceImpl(client: sl(), storage: sl()));
   // Core
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));

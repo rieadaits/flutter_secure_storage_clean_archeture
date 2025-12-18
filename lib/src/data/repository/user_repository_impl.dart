@@ -13,11 +13,7 @@ class UserRepositoryImpl implements UserRepository {
   UserRepositoryImpl({required this.remoteDataSource});
   @override
   Future<Either<Failure, UserEntity>> getUser() async {
-      try {
-        final user = await remoteDataSource.getUser();
-        return Right(user);
-      } catch (e) {
-        return Left(ServerFailure(e.toString()));
-      }
+      final result = await remoteDataSource.getUser();
+      return result;
   }
  }

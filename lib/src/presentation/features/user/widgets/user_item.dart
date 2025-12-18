@@ -1,7 +1,10 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/entities/user_entity/user_entity.dart';
+import '../../../bloc/user_bloc/user_bloc.dart';
+import '../../../bloc/user_bloc/user_event.dart';
 
 class UserItem extends StatelessWidget {
   const UserItem({super.key, required this.user});
@@ -36,6 +39,12 @@ class UserItem extends StatelessWidget {
           SizedBox(height: 10),
           Text("Crypto Wallet: ${user.cryptoWallet} ${user.cryptoWallet}"),
           SizedBox(height: 10),
+          FilledButton(
+            onPressed: () {
+              context.read<UserBloc>().add(GetUserEvent());
+            },
+            child: Text("Get User Again"),
+          ),
         ],
       ),
     );

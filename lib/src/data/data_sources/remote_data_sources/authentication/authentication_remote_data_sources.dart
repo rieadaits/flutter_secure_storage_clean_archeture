@@ -1,25 +1,29 @@
 import 'dart:convert';
 
+import 'package:dartz/dartz.dart';
 import 'package:flutter_fintech_task/src/data/models/login_response.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../core/constant/api_urls.dart';
-import '../../../../core/error/exceptions.dart';
+import '../../../../core/constant/storage_keys.dart';
+import '../../../../core/error/falures.dart';
 import '../../../../domain/entities/authentication/login.dart';
 import '../../../models/login_body.dart';
 
 abstract class AuthenticationRemoteDataSources {
-  Future<Login> login(LoginBody body);
+  Future<Either<Failure, Login>> login(LoginBody body);
 }
 
 class AuthenticationRemoteDataSourcesImpl
     implements AuthenticationRemoteDataSources {
   final http.Client client;
+  final FlutterSecureStorage storage;
 
-  AuthenticationRemoteDataSourcesImpl({required this.client});
+  AuthenticationRemoteDataSourcesImpl({required this.client, required this.storage});
 
   @override
-  Future<Login> login(LoginBody body) async {
+  Future<Either<Failure, Login>> login(LoginBody body) async {
     try {
       final response = await client.post(
         Uri.parse('${ApiUrls.baseURL}${ApiUrls.login}'),
@@ -29,15 +33,17 @@ class AuthenticationRemoteDataSourcesImpl
 
       if (response.statusCode == 200) {
         final data = LoginResponse.fromJson(json.decode(response.body));
-        return data.toEntity();
+        await storage.write(key: StorageKeys.accessToken, value: data.accessToken);
+        await storage.write(key: StorageKeys.refreshToken, value: data.refreshToken);
+        return Right(data.toEntity());
       } else {
         final errorMessage =
             json.decode(response.body)['message'] ??
             'Failed to Login';
-        throw ServerException(errorMessage);
+        return Left(ServerFailure(errorMessage) as Failure);
       }
     } catch (e) {
-      throw ServerException(e.toString());
+      return Left(ServerFailure(e.toString()) as Failure);
     }
   }
 }

@@ -76,7 +76,7 @@ class LoginPage extends HookWidget {
         body: LoginBody(
           email: email,
           password: password,
-          expiresInMins: "10",
+          expiresInMins: "1",
         ),
       ),
     );
