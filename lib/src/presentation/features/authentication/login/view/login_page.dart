@@ -1,15 +1,18 @@
 import 'dart:developer';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../../../../../core/di/injection_container.dart';
+import '../../../../../core/route/app_route.dart';
 import '../../../../../data/models/login_body.dart';
 import '../../../../bloc/auth_bloc/auth_bloc.dart';
 import '../../../../bloc/auth_bloc/auth_event.dart';
 import '../../../../bloc/auth_bloc/auth_state.dart';
 
+@RoutePage()
 class LoginPage extends HookWidget {
   const LoginPage({super.key});
 
@@ -46,7 +49,7 @@ class LoginPage extends HookWidget {
             BlocConsumer<AuthBloc, AuthState>(
               listener: (context, state) {
                 if (state is AuthSuccess) {
-                  log("Login successful : ${state.login.accessToken}");
+                  context.router.push(const UserRoute());
                 } else if (state is AuthFailure) {
                   log("Login failed : ${state.message}");
                 }

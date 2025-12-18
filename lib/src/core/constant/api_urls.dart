@@ -9,4 +9,7 @@ class ApiUrls {
   static const String forgotPassword = '/auth/forgot_password/';
   static const String resetPassword = '/auth/reset_password/';
   static const String refreshToken = '/auth/refresh_token/';
+
+  /// User
+  static const String getUser = '/auth/me';
 }

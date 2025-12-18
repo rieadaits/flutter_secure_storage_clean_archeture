@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flash/flash_helper.dart';
 
+import '../../core/route/app_route.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/theme_bloc.dart';
 import '../features/authentication/login/view/login_page.dart';
@@ -13,6 +15,7 @@ class AppWidget extends StatefulWidget {
 }
 
 class _AppWidgetState extends State<AppWidget> {
+  final _appRouter = AppRouter();
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -21,7 +24,8 @@ class _AppWidgetState extends State<AppWidget> {
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, themeState) {
-          return MaterialApp(
+          return MaterialApp.router(
+            routerConfig: _appRouter.config(),
             title: 'GitHub Repository Explorer',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
@@ -29,7 +33,19 @@ class _AppWidgetState extends State<AppWidget> {
             themeMode: themeState is ThemeLoaded
                 ? (themeState.isDarkMode ? ThemeMode.dark : ThemeMode.light)
                 : ThemeMode.light,
-            home: const LoginPage(),
+              builder: (context, widget) {
+              return Toast(
+                navigatorKey: _appRouter.navigatorKey,
+                child: MediaQuery(
+                  ///Setting font does not change with system font size
+                  data: MediaQuery.of(context).copyWith(
+                    textScaler: TextScaler.noScaling,
+                  ),
+                  child: widget ?? const SizedBox(),
+                ),
+              );
+            },
+            
           );
         },
       ),
