@@ -25,7 +25,7 @@ Future<void> init() async {
 
   // BLoC
   sl.registerLazySingleton(() => AuthBloc(authRepository: sl()));
-  sl.registerLazySingleton(() => UserBloc(userRepository: sl()));
+  sl.registerLazySingleton(() => UserBloc(userRepository: sl(), storage: sl()));
 
   // Repository
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(remoteDataSource: sl()));

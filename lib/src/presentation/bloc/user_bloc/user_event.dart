@@ -13,3 +13,10 @@ class GetUserEvent extends UserEvent {
   @override
   List<Object> get props => [];
 }
+
+class UserUnauthorizedEvent extends UserEvent {
+  const UserUnauthorizedEvent();
+
+  @override
+  List<Object> get props => [];
+}

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_fintech_task/src/presentation/features/user/widgets/user_item.dart';
 
 import '../../../../core/di/injection_container.dart';
+import '../../../../core/route/app_route.dart';
 import '../../../bloc/user_bloc/user_bloc.dart';
 import '../../../bloc/user_bloc/user_event.dart';
 import '../../../bloc/user_bloc/user_state.dart';
@@ -15,7 +16,7 @@ class UserPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => UserBloc(userRepository: sl()),
+      create: (context) => UserBloc(userRepository: sl(), storage: sl()),
       child: Scaffold(
         appBar: AppBar(title: Text("User")),
         body: Column(
@@ -33,14 +34,21 @@ class UserPage extends StatelessWidget {
                 if (state is UserFailure) {
                   return Text(state.message);
                 }
+                if (state is UserUnauthorized) {
+                  context.router.pushAndPopUntil(
+                    const LoginRoute(),
+                    predicate: (_) => false,
+                  );
+                  return Text(state.message);
+                }
                 return Align(
                   alignment: Alignment.topCenter,
                   child: FilledButton(
-                  onPressed: () {
-                    context.read<UserBloc>().add(GetUserEvent());
-                  },
-                  child: Text("Get User"),
-                ),
+                    onPressed: () {
+                      context.read<UserBloc>().add(GetUserEvent());
+                    },
+                    child: Text("Get User"),
+                  ),
                 );
               },
             ),

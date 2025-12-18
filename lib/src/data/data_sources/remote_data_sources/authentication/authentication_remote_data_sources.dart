@@ -40,10 +40,10 @@ class AuthenticationRemoteDataSourcesImpl
         final errorMessage =
             json.decode(response.body)['message'] ??
             'Failed to Login';
-        return Left(ServerFailure(errorMessage) as Failure);
+        return Left(ServerFailure(errorMessage, response.statusCode) as Failure);
       }
     } catch (e) {
-      return Left(ServerFailure(e.toString()) as Failure);
+      return Left(ServerFailure(e.toString(), 500) as Failure);
     }
   }
 }

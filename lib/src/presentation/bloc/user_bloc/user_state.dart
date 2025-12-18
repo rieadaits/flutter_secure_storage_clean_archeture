@@ -29,7 +29,16 @@ class UserSuccess extends UserState {
 
 class UserFailure extends UserState {
   final String message;
-  const UserFailure({required this.message});
+  final int? statusCode;
+  const UserFailure({required this.message, this.statusCode});
+
+  @override
+  List<Object> get props => [message, statusCode ?? 0];
+}
+
+class UserUnauthorized extends UserState {
+  final String message;
+  const UserUnauthorized({required this.message});
 
   @override
   List<Object> get props => [message];
