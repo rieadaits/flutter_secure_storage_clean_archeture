@@ -23,7 +23,10 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
   @override
   Future<Either<Failure, UserEntity>> getUser() async {
-    final accessToken = await storage.read(key: StorageKeys.accessToken);
+    final accessToken = (await storage.read(key: StorageKeys.accessToken ?? "access")) ?? "";
+    if (accessToken.isEmpty) {
+      return Left(ServerFailure('No access token found') as Failure);
+    }
     try {
       final response = await client.get(Uri.parse('${ApiUrls.baseURL}${ApiUrls.getUser}'), 
       headers: {'Accept': 'application/json', 'Authorization': 'Bearer $accessToken'});

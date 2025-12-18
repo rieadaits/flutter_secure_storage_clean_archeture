@@ -33,8 +33,8 @@ class AuthenticationRemoteDataSourcesImpl
 
       if (response.statusCode == 200) {
         final data = LoginResponse.fromJson(json.decode(response.body));
-        await storage.write(key: StorageKeys.accessToken, value: data.accessToken);
-        await storage.write(key: StorageKeys.refreshToken, value: data.refreshToken);
+        await storage.write(key: StorageKeys.accessToken ?? "access", value: data.accessToken);
+        await storage.write(key: StorageKeys.refreshToken ?? "refresh", value: data.refreshToken);
         return Right(data.toEntity());
       } else {
         final errorMessage =
