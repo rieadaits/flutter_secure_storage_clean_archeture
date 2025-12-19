@@ -23,7 +23,15 @@ class UserPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: 10),
-            BlocBuilder<UserBloc, UserState>(
+            BlocConsumer<UserBloc, UserState>(
+              listener: (context, state) {
+                if (state is UserUnauthorized) {
+                  context.router.pushAndPopUntil(
+                    const LoginRoute(),
+                    predicate: (_) => false,
+                  );
+                }
+              },
               builder: (context, state) {
                 if (state is UserLoading) {
                   return Center(child: CircularProgressIndicator());
@@ -32,14 +40,19 @@ class UserPage extends StatelessWidget {
                   return UserItem(user: state.user);
                 }
                 if (state is UserFailure) {
-                  return Text(state.message);
-                }
-                if (state is UserUnauthorized) {
-                  context.router.pushAndPopUntil(
-                    const LoginRoute(),
-                    predicate: (_) => false,
+                  return Center(
+                    child: Column(
+                      children: [
+                        Text(state.message),
+                        FilledButton(
+                          onPressed: () {
+                            context.read<UserBloc>().add(GetUserEvent());
+                          },
+                          child: Text("Get User Again"),
+                        ),
+                      ],
+                    ),
                   );
-                  return Text(state.message);
                 }
                 return Align(
                   alignment: Alignment.topCenter,
