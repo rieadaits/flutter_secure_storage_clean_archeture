@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_fintech_task/src/data/data_sources/service/authentication_service.dart';
 import 'package:flutter_fintech_task/src/data/models/login_response.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -16,26 +17,21 @@ abstract class AuthenticationRemoteDataSources {
 
 class AuthenticationRemoteDataSourcesImpl
     implements AuthenticationRemoteDataSources {
-  final DioClient client;
   final FlutterSecureStorage storage;
+  final AuthenticationService authenticationService;
 
-  AuthenticationRemoteDataSourcesImpl({required this.client, required this.storage});
+  AuthenticationRemoteDataSourcesImpl({required this.authenticationService, required this.storage});
 
   @override
   Future<Either<Failure, Login>> login(LoginBody body) async {
     try {
-      final response = await client.post(
-          '${ApiUrls.baseURL}${ApiUrls.login}',
-          data: body.toJson(),
-        );
-
-        final data = LoginResponse.fromJson(response.data);
-        await storage.write(key: StorageKeys.accessToken ?? "access", value: data.accessToken);
-        await storage.write(key: StorageKeys.refreshToken ?? "refresh", value: data.refreshToken);
-        return Right(data.toEntity());
+      final response = await authenticationService.login(body);
+      return Right(response.toEntity());
       
     }on DioException catch(e) {
       return Left(ServerFailure(e.response!.data['message'], e.response!.statusCode) as Failure);
+    } catch(e) {
+      return Left(ServerFailure(e.toString(), 500) as Failure);
     }
   }
 }

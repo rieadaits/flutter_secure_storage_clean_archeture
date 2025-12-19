@@ -10,6 +10,7 @@ import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 import '../../data/data_sources/remote_data_sources/user_remote_data_source.dart';
+import '../../data/data_sources/service/authentication_service.dart';
 import '../../domain/repositories/user_repository/user_repository.dart';
 import '../network/network_info.dart';
 
@@ -31,7 +32,7 @@ Future<void> init() async {
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(remoteDataSource: sl()));
   sl.registerLazySingleton<UserRepository>(() => UserRepositoryImpl(remoteDataSource: sl()));
   // Data sources
-  sl.registerLazySingleton<AuthenticationRemoteDataSources>(() => AuthenticationRemoteDataSourcesImpl(client: sl(), storage: sl()));
+  sl.registerLazySingleton<AuthenticationRemoteDataSources>(() => AuthenticationRemoteDataSourcesImpl(authenticationService: sl(), storage: sl()));
   sl.registerLazySingleton<UserRemoteDataSource>(() => UserRemoteDataSourceImpl(client: sl(), storage: sl()));
   // Core
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
@@ -39,5 +40,8 @@ Future<void> init() async {
 
   // External
   sl.registerLazySingleton(() => InternetConnectionChecker.instance);
+
+  /// Services
+  sl.registerLazySingleton(() => AuthenticationService(sl()));
     
 }

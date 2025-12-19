@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_fintech_task/src/core/constant/api_urls.dart';
 
 import 'interceptors.dart';
 
@@ -10,6 +11,7 @@ class DioClient {
       headers: {
         'Content-Type': 'application/json; charset=UTF-8'
       },
+      baseUrl: ApiUrls.baseURL ?? '',
       responseType: ResponseType.json,
       sendTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10)
