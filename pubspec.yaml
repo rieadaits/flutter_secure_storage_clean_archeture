@@ -72,6 +72,7 @@ dependencies:
   retrofit: ^4.1.0
   flutter_hooks: ^0.20.5
   logger: ^2.0.0
+  local_auth: ^3.0.0
 
 dev_dependencies:
   flutter_test:

@@ -10,14 +10,14 @@ class Login {
   final String image;
 
   const Login({
-    required this.accessToken,
-    required this.refreshToken,
-    required this.id,
-    required this.username,
-    required this.email,
-    required this.firstName,
-    required this.lastName,
-    required this.gender,
-    required this.image,
+    this.accessToken = '',
+    this.refreshToken = '',
+    this.id = 0,
+    this.username = '',
+    this.email = '',
+    this.firstName = '',
+    this.lastName = '',
+    this.gender = '',
+    this.image = '',
   });
 }
