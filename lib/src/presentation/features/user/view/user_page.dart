@@ -15,8 +15,8 @@ class UserPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => UserBloc(userRepository: sl(), storage: sl()),
+    return BlocProvider.value(
+      value: UserBloc(userRepository: sl(), storage: sl()),
       child: Scaffold(
         appBar: AppBar(title: Text("User")),
         body: Column(

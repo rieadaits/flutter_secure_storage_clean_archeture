@@ -20,9 +20,8 @@ class LoginPage extends HookWidget {
   Widget build(BuildContext context) {
     final emailController = useTextEditingController();
     final passwordController = useTextEditingController();
-    return BlocProvider(
-      create: (context) =>
-          sl<AuthBloc>()..add(AuthenticateBiometricsCheckEvent()),
+    return BlocProvider.value(
+      value: sl<AuthBloc>()..add(AuthenticateBiometricsCheckEvent()),
       child: Scaffold(
         appBar: AppBar(title: Text("Login"), centerTitle: true),
         body: Column(
