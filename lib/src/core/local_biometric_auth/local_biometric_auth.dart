@@ -8,10 +8,23 @@ class LocalBiometricAuth {
 
   Future<bool> canAuthenticateBiometrics() async {
     try {
-      return await _localAuthentication.canCheckBiometrics;
+      final bool canAuthenticate =
+          await _localAuthentication.canCheckBiometrics ||
+          await _localAuthentication.isDeviceSupported();
+      return canAuthenticate;
     } on PlatformException catch (e) {
       log(e.toString());
       return false;
+    }
+  }
+
+  /// Get available biometric types
+  Future<List<BiometricType>> getAvailableBiometrics() async {
+    try {
+      return await _localAuthentication.getAvailableBiometrics();
+    } catch (e) {
+      log('Error getting available biometrics: $e');
+      return [];
     }
   }
 
