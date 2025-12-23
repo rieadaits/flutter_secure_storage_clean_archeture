@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_fintech_task/src/data/models/login_body.dart';
 import 'package:flutter_fintech_task/src/domain/repositories/auth_repository/auth_repository.dart';
 import 'package:flutter_fintech_task/src/presentation/bloc/auth_bloc/auth_event.dart';
 import 'package:flutter_fintech_task/src/presentation/bloc/auth_bloc/auth_state.dart';
@@ -46,7 +47,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(state.copyWith(status: AuthStatus.loading));
     final result = await localAuth.authenticate();
     if (result) {
-      emit(state.copyWith(status: AuthStatus.success));
+      // For demonstration purposes, using hardcoded credentials
+      add(
+        LoginEvent(
+          body: LoginBody(
+            email: "emilys",
+            expiresInMins: "10",
+            password: "emilyspass",
+          ),
+        ),
+      );
     } else {
       emit(state.copyWith(status: AuthStatus.failure));
     }
