@@ -13,7 +13,7 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 import '../../data/data_sources/remote_data_sources/user_remote_data_source.dart';
 import '../../domain/repositories/user_repository/user_repository.dart';
-import '../local_auth/local_auth.dart';
+import '../local_biometric_auth/local_biometric_auth.dart';
 import '../network/network_info.dart';
 
 final sl = GetIt.instance;
@@ -47,7 +47,7 @@ Future<void> init() async {
   // Core
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
   sl.registerLazySingleton<DioClient>(() => DioClient());
-  sl.registerLazySingleton<LocalAuth>(() => LocalAuth());
+  sl.registerLazySingleton<LocalBiometricAuth>(() => LocalBiometricAuth());
 
   // External
   sl.registerLazySingleton(() => InternetConnectionChecker.instance);

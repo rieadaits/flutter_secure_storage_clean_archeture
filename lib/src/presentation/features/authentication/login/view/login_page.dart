@@ -77,7 +77,9 @@ class LoginPage extends HookWidget {
                     SizedBox(height: 20),
                     if (state.canAuthenticate)
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          context.read<AuthBloc>().add(BiometricLoginEvent());
+                        },
                         icon: Icon(Icons.fingerprint),
                       ),
                   ],

@@ -18,3 +18,5 @@ class LoginEvent extends AuthEvent {
   @override
   List<Object> get props => [body];
 }
+
+class BiometricLoginEvent extends AuthEvent {}

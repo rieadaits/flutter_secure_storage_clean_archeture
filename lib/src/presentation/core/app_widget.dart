@@ -1,6 +1,6 @@
+import 'package:flash/flash_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flash/flash_helper.dart';
 
 import '../../core/route/app_route.dart';
 import '../../core/theme/app_theme.dart';
@@ -32,19 +32,18 @@ class _AppWidgetState extends State<AppWidget> {
             themeMode: themeState is ThemeLoaded
                 ? (themeState.isDarkMode ? ThemeMode.dark : ThemeMode.light)
                 : ThemeMode.light,
-              builder: (context, widget) {
+            builder: (context, widget) {
               return Toast(
                 navigatorKey: _appRouter.navigatorKey,
                 child: MediaQuery(
                   ///Setting font does not change with system font size
-                  data: MediaQuery.of(context).copyWith(
-                    textScaler: TextScaler.noScaling,
-                  ),
+                  data: MediaQuery.of(
+                    context,
+                  ).copyWith(textScaler: TextScaler.noScaling),
                   child: widget ?? const SizedBox(),
                 ),
               );
             },
-            
           );
         },
       ),
