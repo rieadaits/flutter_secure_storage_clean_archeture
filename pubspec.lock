@@ -595,7 +595,7 @@ packages:
   local_auth:
     dependency: "direct main"
     description:
-      name: local_biometric_auth
+      name: local_auth
       sha256: a4f1bf57f0236a4aeb5e8f0ec180e197f4b112a3456baa6c1e73b546630b0422
       url: "https://pub.dev"
     source: hosted
