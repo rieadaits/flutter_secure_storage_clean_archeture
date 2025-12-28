@@ -49,7 +49,8 @@ class LoginPage extends HookWidget {
             BlocConsumer<AuthBloc, AuthState>(
               listener: (context, state) {
                 if (state.status == AuthStatus.success) {
-                  context.router.push(const UserRoute());
+                  context.router.pushAndPopUntil(const UserRoute(), predicate: (_) => false,
+                  );
                 } else if (state.status == AuthStatus.failure) {
                   log("Login failed : ${state.failureMessage}");
                 }

@@ -27,6 +27,22 @@ class LoginRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [SpalasPage]
+class SpalasRoute extends PageRouteInfo<void> {
+  const SpalasRoute({List<PageRouteInfo>? children})
+    : super(SpalasRoute.name, initialChildren: children);
+
+  static const String name = 'SpalasRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const SpalasPage();
+    },
+  );
+}
+
+/// generated route for
 /// [UserPage]
 class UserRoute extends PageRouteInfo<void> {
   const UserRoute({List<PageRouteInfo>? children})
