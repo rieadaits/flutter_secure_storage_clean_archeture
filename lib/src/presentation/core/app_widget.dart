@@ -20,7 +20,7 @@ class _AppWidgetState extends State<AppWidget> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => ThemeBloc()..add(ThemeInitialized())),
-      ],
+       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, themeState) {
           return MaterialApp.router(

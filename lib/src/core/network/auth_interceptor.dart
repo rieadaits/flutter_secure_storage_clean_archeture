@@ -2,12 +2,20 @@ import 'package:dio/dio.dart';
 import 'package:flutter_fintech_task/src/core/constant/api_urls.dart';
 import 'package:flutter_fintech_task/src/core/network/token_storage.dart';
 
+import '../../presentation/bloc/log_out/logout_event_bus.dart';
+
 class AuthInterceptor extends Interceptor {
   final Dio dio;
   final TokenStorage tokenStorage;
+  final LogoutEventBus logoutEventBus;
+
   bool _isRefreshing = false;
 
-  AuthInterceptor({required this.dio, required this.tokenStorage});
+  AuthInterceptor({
+    required this.dio,
+    required this.tokenStorage,
+    required this.logoutEventBus,
+  });
 
   @override
   Future<void> onRequest(
@@ -26,23 +34,27 @@ class AuthInterceptor extends Interceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
-    if (err.response?.statusCode == 401 &&
-        !_isRefreshing &&
-        err.requestOptions.extra['retry'] != true) {
+    final isUnauthorized = err.response?.statusCode == 401;
+    final isRetry = err.requestOptions.extra['retry'] == true;
+
+    if (isUnauthorized && !_isRefreshing && !isRetry) {
       _isRefreshing = true;
 
       try {
         await _refreshToken();
         _isRefreshing = false;
 
-        final requestOptions = err.requestOptions;
-        requestOptions.extra['retry'] = true;
+        final request = err.requestOptions;
+        request.extra['retry'] = true;
 
-        final response = await dio.fetch(requestOptions);
+        final response = await dio.fetch(request);
         return handler.resolve(response);
-      } catch (_) {
+      } catch (e) {
         _isRefreshing = false;
+
+        /// 🔥 CENTRAL FORCE LOGOUT
         await tokenStorage.clear();
+        logoutEventBus.emit(LogoutEvent.forceLogout);
       }
     }
 
@@ -51,6 +63,10 @@ class AuthInterceptor extends Interceptor {
 
   Future<void> _refreshToken() async {
     final refreshToken = await tokenStorage.getRefreshToken();
+
+    if (refreshToken == null) {
+      throw Exception("Refresh token missing");
+    }
 
     final response = await dio.post(
       "${ApiUrls.baseURL}${ApiUrls.refreshToken}",

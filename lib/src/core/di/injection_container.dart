@@ -6,6 +6,8 @@ import 'package:flutter_fintech_task/src/data/repository/user_repository_impl.da
     show UserRepositoryImpl;
 import 'package:flutter_fintech_task/src/domain/repositories/auth_repository/auth_repository.dart';
 import 'package:flutter_fintech_task/src/presentation/bloc/auth_bloc/auth_bloc.dart';
+import 'package:flutter_fintech_task/src/presentation/bloc/log_out/logout_event_bus.dart';
+import 'package:flutter_fintech_task/src/presentation/bloc/system_auth_bloc/system_auth_bloc.dart';
 import 'package:flutter_fintech_task/src/presentation/bloc/user_bloc/user_bloc.dart'
     show UserBloc;
 import 'package:flutter_fintech_task/src/presentation/features/sessions_timer/bloc/session_timer_bloc.dart';
@@ -34,6 +36,7 @@ Future<void> init() async {
   );
   sl.registerLazySingleton(() => UserBloc(userRepository: sl(), storage: sl()));
   sl.registerLazySingleton(() => SessionTimerBloc());
+  sl.registerLazySingleton(() => AppAuthBloc(authEventBus: sl(), storage: sl()));
 
   // Repository
   sl.registerLazySingleton<AuthRepository>(
@@ -52,11 +55,11 @@ Future<void> init() async {
 
   // External
   sl.registerLazySingleton(() => InternetConnectionChecker.instance);
+  sl.registerLazySingleton<LogoutEventBus>(() => LogoutEventBus());
 
   // Core
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
   sl.registerLazySingleton<DioClient>(
-    () => DioClient(tokenStorage: sl(), networkInfo: sl()),
-  );
+    () => DioClient(tokenStorage: sl(), networkInfo: sl()));
   sl.registerLazySingleton<LocalBiometricAuth>(() => LocalBiometricAuth());
 }

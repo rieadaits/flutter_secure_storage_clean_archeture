@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_fintech_task/src/core/di/injection_container.dart';
 import 'package:flutter_fintech_task/src/core/network/auth_interceptor.dart';
 import 'package:flutter_fintech_task/src/core/network/connectivity_interceptor.dart';
 import 'package:flutter_fintech_task/src/core/network/network_info.dart';
@@ -21,7 +22,7 @@ class DioClient {
 
     _dio.interceptors.addAll([
       ConnectivityInterceptor(networkInfo: networkInfo),
-      AuthInterceptor(dio: _dio, tokenStorage: tokenStorage),
+      AuthInterceptor(dio: _dio, tokenStorage: tokenStorage, logoutEventBus: sl()),
       RetryInterceptor(dio: _dio),
       LogInterceptor(requestBody: true, responseBody: true),
     ]);

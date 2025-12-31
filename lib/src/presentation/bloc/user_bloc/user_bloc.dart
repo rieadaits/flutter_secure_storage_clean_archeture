@@ -3,7 +3,6 @@ import 'package:flutter_fintech_task/src/presentation/bloc/user_bloc/user_event.
 import 'package:flutter_fintech_task/src/presentation/bloc/user_bloc/user_state.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import '../../../core/constant/storage_keys.dart';
 import '../../../domain/repositories/user_repository/user_repository.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
@@ -13,7 +12,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc({required this.userRepository, required this.storage})
     : super(UserInitial()) {
     on<GetUserEvent>(_onGetUserEvent);
-    on<UserUnauthorizedEvent>(_onUserUnauthorizedEvent);
   }
 
   Future<void> _onGetUserEvent(
@@ -26,18 +24,5 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       (failure) => emit(UserFailure(message: failure.message)),
       (success) => emit(UserSuccess(user: success)),
     );
-  }
-
-  Future<void> _onUserUnauthorizedEvent(
-    UserUnauthorizedEvent event,
-    Emitter<UserState> emit,
-  ) async {
-    emit(UserUnauthorized(message: 'Unauthorized'));
-    _logout();
-  }
-
-  Future<void> _logout() async {
-    await storage.delete(key: StorageKeys.accessToken ?? "access");
-    await storage.delete(key: StorageKeys.refreshToken ?? "refresh");
   }
 }
