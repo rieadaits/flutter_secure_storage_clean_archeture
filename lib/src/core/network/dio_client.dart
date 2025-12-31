@@ -1,30 +1,40 @@
 import 'package:dio/dio.dart';
-
-import 'interceptors.dart';
+import 'package:flutter_fintech_task/src/core/network/auth_interceptor.dart';
+import 'package:flutter_fintech_task/src/core/network/connectivity_interceptor.dart';
+import 'package:flutter_fintech_task/src/core/network/network_info.dart';
+import 'package:flutter_fintech_task/src/core/network/retry_interceptor.dart';
+import 'package:flutter_fintech_task/src/core/network/token_storage.dart';
 
 class DioClient {
-  
   late final Dio _dio;
-  DioClient(): _dio = Dio(
-    BaseOptions(
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8'
-      },
-      responseType: ResponseType.json,
-      sendTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10)
-    ),
-  )..interceptors.addAll([LoggerInterceptor()]);
+  late final NetworkInfo networkInfo;
+
+  DioClient({required TokenStorage tokenStorage, required this.networkInfo}) {
+    _dio = Dio(
+      BaseOptions(
+        connectTimeout: const Duration(seconds: 15),
+        receiveTimeout: const Duration(seconds: 15),
+        sendTimeout: const Duration(seconds: 15),
+        headers: {"Content-Type": "application/json"},
+      ),
+    );
+
+    _dio.interceptors.addAll([
+      ConnectivityInterceptor(networkInfo: networkInfo),
+      AuthInterceptor(dio: _dio, tokenStorage: tokenStorage),
+      RetryInterceptor(dio: _dio),
+      LogInterceptor(requestBody: true, responseBody: true),
+    ]);
+  }
 
   // GET METHOD
-  Future < Response > get(
+  Future<Response> get(
     String url, {
-      Map < String,
-      dynamic > ? queryParameters,
-      Options ? options,
-      CancelToken ? cancelToken,
-      ProgressCallback ? onReceiveProgress,
-    }) async {
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onReceiveProgress,
+  }) async {
     try {
       final Response response = await _dio.get(
         url,
@@ -34,22 +44,20 @@ class DioClient {
         onReceiveProgress: onReceiveProgress,
       );
       return response;
-    }
-    on DioException {
+    } on DioException {
       rethrow;
     }
   }
 
   // POST METHOD
-  Future < Response > post(
+  Future<Response> post(
     String url, {
-      data,
-      Map < String,
-      dynamic > ? queryParameters,
-      Options ? options,
-      ProgressCallback ? onSendProgress,
-      ProgressCallback ? onReceiveProgress,
-    }) async {
+    data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
     try {
       final Response response = await _dio.post(
         url,
@@ -65,16 +73,15 @@ class DioClient {
   }
 
   // PUT METHOD
-  Future < Response > put(
+  Future<Response> put(
     String url, {
-      dynamic data,
-      Map < String,
-      dynamic > ? queryParameters,
-      Options ? options,
-      CancelToken ? cancelToken,
-      ProgressCallback ? onSendProgress,
-      ProgressCallback ? onReceiveProgress,
-    }) async {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
     try {
       final Response response = await _dio.put(
         url,
@@ -92,14 +99,13 @@ class DioClient {
   }
 
   // DELETE METHOD
-  Future < dynamic > delete(
+  Future<dynamic> delete(
     String url, {
-      data,
-      Map < String,
-      dynamic > ? queryParameters,
-      Options ? options,
-      CancelToken ? cancelToken,
-    }) async {
+    data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+  }) async {
     try {
       final Response response = await _dio.delete(
         url,

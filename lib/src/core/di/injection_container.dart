@@ -1,4 +1,5 @@
 import 'package:flutter_fintech_task/src/core/network/dio_client.dart';
+import 'package:flutter_fintech_task/src/core/network/token_storage.dart';
 import 'package:flutter_fintech_task/src/data/data_sources/remote_data_sources/authentication_remote_data_sources.dart';
 import 'package:flutter_fintech_task/src/data/repository/auth_repository_impl.dart';
 import 'package:flutter_fintech_task/src/data/repository/user_repository_impl.dart'
@@ -7,6 +8,7 @@ import 'package:flutter_fintech_task/src/domain/repositories/auth_repository/aut
 import 'package:flutter_fintech_task/src/presentation/bloc/auth_bloc/auth_bloc.dart';
 import 'package:flutter_fintech_task/src/presentation/bloc/user_bloc/user_bloc.dart'
     show UserBloc;
+import 'package:flutter_fintech_task/src/presentation/features/sessions_timer/bloc/session_timer_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -24,11 +26,14 @@ Future<void> init() async {
     () => const FlutterSecureStorage(aOptions: AndroidOptions()),
   );
 
+  sl.registerLazySingleton<TokenStorage>(() => TokenStorage(storage: sl()));
+
   // BLoC
   sl.registerLazySingleton(
     () => AuthBloc(authRepository: sl(), localAuth: sl()),
   );
   sl.registerLazySingleton(() => UserBloc(userRepository: sl(), storage: sl()));
+  sl.registerLazySingleton(() => SessionTimerBloc());
 
   // Repository
   sl.registerLazySingleton<AuthRepository>(
@@ -44,11 +49,14 @@ Future<void> init() async {
   sl.registerLazySingleton<UserRemoteDataSource>(
     () => UserRemoteDataSourceImpl(client: sl(), storage: sl()),
   );
-  // Core
-  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
-  sl.registerLazySingleton<DioClient>(() => DioClient());
-  sl.registerLazySingleton<LocalBiometricAuth>(() => LocalBiometricAuth());
 
   // External
   sl.registerLazySingleton(() => InternetConnectionChecker.instance);
+
+  // Core
+  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
+  sl.registerLazySingleton<DioClient>(
+    () => DioClient(tokenStorage: sl(), networkInfo: sl()),
+  );
+  sl.registerLazySingleton<LocalBiometricAuth>(() => LocalBiometricAuth());
 }

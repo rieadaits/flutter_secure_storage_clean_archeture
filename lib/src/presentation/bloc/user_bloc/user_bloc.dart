@@ -10,24 +10,28 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   final UserRepository userRepository;
   final FlutterSecureStorage storage;
 
-  UserBloc({required this.userRepository, required this.storage}) : super(UserInitial()) {
+  UserBloc({required this.userRepository, required this.storage})
+    : super(UserInitial()) {
     on<GetUserEvent>(_onGetUserEvent);
     on<UserUnauthorizedEvent>(_onUserUnauthorizedEvent);
   }
 
-  Future<void> _onGetUserEvent(GetUserEvent event, Emitter<UserState> emit) async {
+  Future<void> _onGetUserEvent(
+    GetUserEvent event,
+    Emitter<UserState> emit,
+  ) async {
     emit(UserLoading());
     final result = await userRepository.getUser();
-    result.fold((failure) => emit(UserFailure(message: failure.message)), 
-    (success) => emit(UserSuccess(user: success)));
-    if (result.isLeft()) {
-      if (result.fold((failure) => failure.statusCode, (success) => null) == 403) {
-        add(UserUnauthorizedEvent());
-      }
-    }
+    result.fold(
+      (failure) => emit(UserFailure(message: failure.message)),
+      (success) => emit(UserSuccess(user: success)),
+    );
   }
 
-  Future<void> _onUserUnauthorizedEvent(UserUnauthorizedEvent event, Emitter<UserState> emit) async {
+  Future<void> _onUserUnauthorizedEvent(
+    UserUnauthorizedEvent event,
+    Emitter<UserState> emit,
+  ) async {
     emit(UserUnauthorized(message: 'Unauthorized'));
     _logout();
   }

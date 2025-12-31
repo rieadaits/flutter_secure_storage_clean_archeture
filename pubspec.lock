@@ -306,7 +306,7 @@ packages:
     source: hosted
     version: "1.1.1"
   flash:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: flash
       sha256: f8b6ed7410df7581b35824967427b79b4e66d59c8f24012ed10f26667a4d44b1
@@ -424,14 +424,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  fluttertoast:
-    dependency: "direct main"
-    description:
-      name: fluttertoast
-      sha256: "144ddd74d49c865eba47abe31cbc746c7b311c82d6c32e571fd73c4264b740e2"
-      url: "https://pub.dev"
-    source: hosted
-    version: "9.0.0"
   freezed:
     dependency: "direct dev"
     description:

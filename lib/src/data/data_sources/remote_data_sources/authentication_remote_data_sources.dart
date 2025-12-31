@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../../core/constant/api_urls.dart';
 import '../../../core/constant/storage_keys.dart';
+import '../../../core/error/dio_failures_mapper.dart';
 import '../../../core/error/falures.dart';
 import '../../../core/network/dio_client.dart';
 import '../../../domain/entities/authentication/login.dart';
@@ -35,7 +36,11 @@ class AuthenticationRemoteDataSourcesImpl
         return Right(data.toEntity());
       
     }on DioException catch(e) {
-      return Left(ServerFailure(e.response!.data['message'], e.response!.statusCode) as Failure);
+      return Left(DioFailureMapper.map(e));
+    }catch (e) {
+      return const Left(
+        UnknownFailure("Unexpected error occurred", null),
+      );
     }
   }
 }

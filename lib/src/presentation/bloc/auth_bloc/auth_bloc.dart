@@ -52,7 +52,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         LoginEvent(
           body: LoginBody(
             email: "emilys",
-            expiresInMins: "10",
+            expiresInMins: "1",
             password: "emilyspass",
           ),
         ),
