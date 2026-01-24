@@ -1,16 +1,15 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_fintech_task/src/core/network/dio_client.dart';
 import 'package:flutter_fintech_task/src/core/network/token_storage.dart';
+import 'package:flutter_fintech_task/src/core/route/app_route.dart';
+import 'package:flutter_fintech_task/src/core/route/navigation_service.dart';
 import 'package:flutter_fintech_task/src/data/data_sources/remote_data_sources/authentication_remote_data_sources.dart';
 import 'package:flutter_fintech_task/src/data/repository/auth_repository_impl.dart';
-import 'package:flutter_fintech_task/src/data/repository/user_repository_impl.dart'
-    show UserRepositoryImpl;
+import 'package:flutter_fintech_task/src/data/repository/user_repository_impl.dart';
 import 'package:flutter_fintech_task/src/domain/repositories/auth_repository/auth_repository.dart';
 import 'package:flutter_fintech_task/src/presentation/bloc/auth_bloc/auth_bloc.dart';
-import 'package:flutter_fintech_task/src/presentation/bloc/log_out/logout_event_bus.dart';
-import 'package:flutter_fintech_task/src/presentation/bloc/system_auth_bloc/system_auth_bloc.dart';
-import 'package:flutter_fintech_task/src/presentation/bloc/user_bloc/user_bloc.dart'
-    show UserBloc;
-import 'package:flutter_fintech_task/src/presentation/features/sessions_timer/bloc/session_timer_bloc.dart';
+import 'package:flutter_fintech_task/src/presentation/bloc/user_bloc/user_bloc.dart';
+import 'package:flutter_fintech_task/src/presentation/bloc/session_timmer_bloc/session_timer_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -28,15 +27,17 @@ Future<void> init() async {
     () => const FlutterSecureStorage(aOptions: AndroidOptions()),
   );
 
-  sl.registerLazySingleton<TokenStorage>(() => TokenStorage(storage: sl()));
+  sl.registerLazySingleton<TokenStorage>(() => TokenStorageImpl(storage: sl()));
+
+  // Register Auto Router
+  sl.registerLazySingleton<AppRouter>(() => AppRouter());
 
   // BLoC
   sl.registerLazySingleton(
     () => AuthBloc(authRepository: sl(), localAuth: sl()),
   );
   sl.registerLazySingleton(() => UserBloc(userRepository: sl(), storage: sl()));
-  sl.registerLazySingleton(() => SessionTimerBloc());
-  sl.registerLazySingleton(() => AppAuthBloc(authEventBus: sl(), storage: sl()));
+  sl.registerLazySingleton(() => SessionBloc(tokenStorage: sl()));
 
   // Repository
   sl.registerLazySingleton<AuthRepository>(
@@ -55,11 +56,16 @@ Future<void> init() async {
 
   // External
   sl.registerLazySingleton(() => InternetConnectionChecker.instance);
-  sl.registerLazySingleton<LogoutEventBus>(() => LogoutEventBus());
 
   // Core
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
   sl.registerLazySingleton<DioClient>(
-    () => DioClient(tokenStorage: sl(), networkInfo: sl()));
+    () => DioClient());
   sl.registerLazySingleton<LocalBiometricAuth>(() => LocalBiometricAuth());
+
+  // // Register Navigator Key first
+  // final navigatorKey = GlobalKey<NavigatorState>();
+  // sl.registerSingleton<GlobalKey<NavigatorState>>(navigatorKey);
+
+  sl.registerLazySingleton<NavigationService>(() => NavigationService(sl()));
 }

@@ -1,20 +1,23 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_fintech_task/src/core/constant/api_urls.dart';
 import 'package:flutter_fintech_task/src/core/network/token_storage.dart';
-
-import '../../presentation/bloc/log_out/logout_event_bus.dart';
+import 'package:flutter_fintech_task/src/core/route/navigation_service.dart';
+import 'package:flutter_fintech_task/src/presentation/bloc/session_timmer_bloc/session_timer_bloc.dart';
 
 class AuthInterceptor extends Interceptor {
   final Dio dio;
   final TokenStorage tokenStorage;
-  final LogoutEventBus logoutEventBus;
+  final NavigationService navigationService;
+  final SessionBloc sessionBloc;
 
   bool _isRefreshing = false;
 
   AuthInterceptor({
     required this.dio,
     required this.tokenStorage,
-    required this.logoutEventBus,
+    required this.navigationService,
+    required this.sessionBloc,
   });
 
   @override
@@ -52,9 +55,14 @@ class AuthInterceptor extends Interceptor {
       } catch (e) {
         _isRefreshing = false;
 
-        /// 🔥 CENTRAL FORCE LOGOUT
+        /// CENTRAL FORCE LOGOUT
+        debugPrint('❌ AuthInterceptor: Token refresh failed - Force logout');
         await tokenStorage.clear();
-        logoutEventBus.emit(LogoutEvent.forceLogout);
+        
+        // Trigger session logout event
+        sessionBloc.add(const SessionExpired());
+        
+        navigationService.goToLogin();
       }
     }
 
