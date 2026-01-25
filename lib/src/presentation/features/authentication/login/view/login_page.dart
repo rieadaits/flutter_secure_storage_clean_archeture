@@ -20,8 +20,8 @@ class LoginPage extends HookWidget {
   Widget build(BuildContext context) {
     final emailController = useTextEditingController();
     final passwordController = useTextEditingController();
-    return BlocProvider(
-      create: (context) => sl<AuthBloc>(),
+    return BlocProvider.value(
+      value: sl<AuthBloc>()..add(AuthenticateBiometricsCheckEvent()),
       child: Scaffold(
         appBar: AppBar(title: Text("Login"), centerTitle: true),
         body: Column(
@@ -48,19 +48,41 @@ class LoginPage extends HookWidget {
             SizedBox(height: 20),
             BlocConsumer<AuthBloc, AuthState>(
               listener: (context, state) {
-                if (state is AuthSuccess) {
-                  context.router.push(const UserRoute());
-                } else if (state is AuthFailure) {
-                  log("Login failed : ${state.message}");
+                if (state.status == AuthStatus.success) {
+                  context.router.pushAndPopUntil(const UserRoute(), predicate: (_) => false,
+                  );
+                } else if (state.status == AuthStatus.failure) {
+                  log("Login failed : ${state.failureMessage}");
                 }
               },
               builder: (context, state) {
-                if (state is AuthLoading) {
+                if (state.status == AuthStatus.loading) {
                   return CircularProgressIndicator();
                 }
-                return FilledButton(
-                  onPressed: () => _onLogin(context, emailController.text, passwordController.text),
-                  child: Text("Login"),
+
+                return Column(
+                  children: [
+                    FilledButton(
+                      onPressed: () =>
+                          (emailController.text.isNotEmpty &&
+                              passwordController.text.isNotEmpty)
+                          ? _onLogin(
+                              context,
+                              emailController.text,
+                              passwordController.text,
+                            )
+                          : {},
+                      child: Text("Login"),
+                    ),
+                    SizedBox(height: 20),
+                    if (state.canAuthenticate)
+                      IconButton(
+                        onPressed: () {
+                          context.read<AuthBloc>().add(BiometricLoginEvent());
+                        },
+                        icon: Icon(Icons.fingerprint),
+                      ),
+                  ],
                 );
               },
             ),
@@ -73,11 +95,7 @@ class LoginPage extends HookWidget {
   void _onLogin(BuildContext context, String email, String password) {
     context.read<AuthBloc>().add(
       LoginEvent(
-        body: LoginBody(
-          email: email,
-          password: password,
-          expiresInMins: "1",
-        ),
+        body: LoginBody(email: email, password: password, expiresInMins: "1"),
       ),
     );
   }

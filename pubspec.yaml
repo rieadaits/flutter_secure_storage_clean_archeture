@@ -39,7 +39,7 @@ dependencies:
   # Dependency Injection
   get_it: ^9.2.0
   # Network
-  http: ^1.5.0
+  dio: ^5.9.0
   internet_connection_checker: ^3.0.1
   # Local Storage
   sqflite: ^2.4.2
@@ -60,7 +60,7 @@ dependencies:
   # Search debouncing
   rxdart: ^0.28.0
   # Toast/Snackbar
-  fluttertoast: ^9.0.0
+  flash: ^3.1.1
   # flutter_secure_storage for securing storage
   flutter_secure_storage: ^10.0.0
   # flutter_dotenv for securing BASE_URL and API_KEY
@@ -71,6 +71,8 @@ dependencies:
   freezed_annotation: ^3.1.0
   retrofit: ^4.1.0
   flutter_hooks: ^0.20.5
+  logger: ^2.0.0
+  local_auth: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -87,7 +89,6 @@ dev_dependencies:
   auto_route_generator: ^10.4.0
   json_serializable: ^6.7.1
   retrofit_generator: ^10.2.0
-  flash: ^3.1.0
 
 
 # For information on the generic Dart part of this file, see the

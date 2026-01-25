@@ -8,6 +8,8 @@ abstract class AuthEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class AuthenticateBiometricsCheckEvent extends AuthEvent {}
+
 class LoginEvent extends AuthEvent {
   final LoginBody body;
 
@@ -16,3 +18,5 @@ class LoginEvent extends AuthEvent {
   @override
   List<Object> get props => [body];
 }
+
+class BiometricLoginEvent extends AuthEvent {}
