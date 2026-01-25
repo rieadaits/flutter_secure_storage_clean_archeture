@@ -12,6 +12,7 @@ class LoggerInterceptor extends Interceptor {
     logger.e('${options.method} request ==> $requestPath'); //Error log
     logger.d('Error type: ${err.error} \n '
         'Error message: ${err.message}'); //Debug log
+
     handler.next(err); //Continue with the Error
   }
 
