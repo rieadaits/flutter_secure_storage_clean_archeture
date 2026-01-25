@@ -47,29 +47,20 @@ class _AppWidgetState extends State<AppWidget> {
                       '🚪 Session timeout detected - Navigating to login',
                     );
 
+                    sl<SessionBloc>().add(UserLoggedOut());
+
                     // Navigate to login
-                    sl<NavigationService>().navigatorKey.currentState
-                        ?.pushNamedAndRemoveUntil(
-                          LoginRoute.name,
-                          (route) => false,
-                        );
+                    sl<NavigationService>().goToLogin();
 
                     // Show timeout message
                     Future.delayed(const Duration(milliseconds: 300), () {
-                      ScaffoldMessenger.of(
-                        sl<NavigationService>().navigatorKey.currentContext!,
-                      ).showSnackBar(
-                        const SnackBar(
-                          content: Text('⏰ Session expired due to inactivity'),
-                          backgroundColor: Colors.red,
-                          duration: Duration(seconds: 3),
-                        ),
+                      sl<NavigationService>().showErrorDialog(
+                        'Session timed out due to inactivity. Please log in again.',
                       );
                     });
                   } else if (state is SessionInactive) {
-                debugPrint('🚪 Session inactive - User logged out');
-                sl<NavigationService>().goToLogin();
-              }
+                    debugPrint('🚪 Session inactive');
+                  }
                 },
                 child: MediaQuery(
                   ///Setting font does not change with system font size

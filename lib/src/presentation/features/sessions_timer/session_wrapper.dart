@@ -5,18 +5,14 @@ import 'package:flutter_fintech_task/src/presentation/bloc/session_timmer_bloc/s
 class SessionWrapper extends StatefulWidget {
   final Widget child;
 
-  const SessionWrapper({
-    super.key,
-    required this.child,
-  });
+  const SessionWrapper({super.key, required this.child});
 
   @override
   State<SessionWrapper> createState() => _SessionWrapperState();
 }
 
-class _SessionWrapperState extends State<SessionWrapper> 
+class _SessionWrapperState extends State<SessionWrapper>
     with WidgetsBindingObserver {
-  
   @override
   void initState() {
     super.initState();
@@ -35,7 +31,7 @@ class _SessionWrapperState extends State<SessionWrapper>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     debugPrint('🔄 App Lifecycle Changed: $state');
     final sessionBloc = context.read<SessionBloc>();
-    
+
     switch (state) {
       case AppLifecycleState.resumed:
         debugPrint('▶️ App Resumed - Triggering AppResumed event');
@@ -47,7 +43,6 @@ class _SessionWrapperState extends State<SessionWrapper>
         break;
       case AppLifecycleState.inactive:
         debugPrint('😴 App Inactive');
-        sessionBloc.add(AppPaused());
         break;
       case AppLifecycleState.detached:
         debugPrint('🔌 App Detached');

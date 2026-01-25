@@ -8,6 +8,16 @@ abstract class TokenStorage {
     required String accessToken,
     required String refreshToken,
   });
+
+  //Save Strings value only
+  Future<void> saveStringValuesOnly({required String key, required String value});
+
+  //Get Strings value only
+  Future<String?> getStringValuesOnly(String key);
+
+  //Clear by Key value
+  Future<void> clearByKey(String key);
+
   Future<void> clear();
 }
 
@@ -41,4 +51,19 @@ class TokenStorageImpl implements TokenStorage {
   
   @override
   Future<void> clear() async => storage.deleteAll();
+
+  @override
+  Future<void> saveStringValuesOnly({required String key, required String value}) async {
+    await storage.write(key: key, value: value);
+  }
+  
+  @override
+  Future<String?> getStringValuesOnly(String key) async {
+    return await storage.read(key: key);
+  }
+
+  @override
+  Future<void> clearByKey(String key) async {
+    await storage.delete(key: key);
+  }
 }

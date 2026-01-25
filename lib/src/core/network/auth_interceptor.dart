@@ -61,8 +61,6 @@ class AuthInterceptor extends Interceptor {
         
         // Trigger session logout event
         sessionBloc.add(const SessionExpired());
-        
-        navigationService.goToLogin();
       }
     }
 

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_fintech_task/src/core/network/dio_client.dart';
 import 'package:flutter_fintech_task/src/core/network/token_storage.dart';
 import 'package:flutter_fintech_task/src/core/route/app_route.dart';
